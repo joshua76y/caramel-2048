@@ -1,0 +1,151 @@
+<view class="container">
+  <!-- 头部区域 -->
+  <view class="header">
+    <view class="title-row">
+      <!-- 焦糖2048 LOGO -->
+      <view class="logo">
+        <view class="logo-line1">
+          <text class="logo-char">焦糖</text>
+        </view>
+        <view class="logo-line2">
+          <text class="logo-num">2048</text>
+        </view>
+      </view>
+      <view class="scores">
+        <view class="score-box">
+          <text class="score-label">分数</text>
+          <text class="score-value">{{score}}</text>
+        </view>
+        <view class="score-box">
+          <text class="score-label">最高</text>
+          <text class="score-value">{{bestScore}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="subtitle-row">
+      <text class="subtitle">合并数字，挑战2048！</text>
+      <view class="btn-new-game" bindtap="onNewGame">
+        <text class="btn-text">新游戏</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 游戏面板 -->
+  <view 
+    class="game-board" 
+    bindtouchstart="onTouchStart" 
+    bindtouchmove="onTouchMove" 
+    bindtouchend="onTouchEnd"
+  >
+    <!-- 背景网格 -->
+    <view class="grid-bg">
+      <view class="grid-cell" wx:for="{{16}}" wx:key="index"></view>
+    </view>
+
+    <!-- 方块层 -->
+    <view class="tiles-layer">
+      <view 
+        class="tile tile-{{item.value}} {{item.showNew ? 'tile-new' : ''}} {{item.showMerged ? 'tile-merged' : ''}}"
+        style="left: {{item.left}}rpx; top: {{item.top}}rpx;"
+        wx:for="{{tiles}}" 
+        wx:key="id"
+      >
+        <text class="tile-text {{item.showMerged ? 'tile-text-merged' : ''}}">{{item.value}}</text>
+      </view>
+    </view>
+
+    <!-- 游戏结束遮罩 -->
+    <view class="game-overlay" wx:if="{{over}}">
+      <text class="overlay-title">游戏结束!</text>
+      <text class="overlay-score">得分: {{score}}</text>
+      <text class="overlay-record" wx:if="{{newRecord}}">新纪录!</text>
+      <view class="overlay-btn" bindtap="onNewGame">
+        <text class="overlay-btn-text">再来一局</text>
+      </view>
+    </view>
+
+    <!-- 胜利遮罩 -->
+    <view class="game-overlay overlay-won" wx:if="{{won && !keepPlaying}}">
+      <text class="overlay-title">恭喜通关!</text>
+      <text class="overlay-score">你达到了2048!</text>
+      <view class="overlay-btn" bindtap="onKeepPlaying">
+        <text class="overlay-btn-text">继续挑战</text>
+      </view>
+      <view class="overlay-btn overlay-btn-secondary" bindtap="onNewGame">
+        <text class="overlay-btn-text">新游戏</text>
+      </view>
+    </view>
+
+    <!-- 礼花特效层 -->
+    <view class="fireworks-layer" wx:if="{{showFireworks}}">
+      <view 
+        class="firework-particle firework-color-{{item.color}}"
+        style="left: {{item.x}}%; top: {{item.y}}%; animation-delay: {{item.delay}}ms; animation-duration: {{item.dur}}ms;"
+        wx:for="{{fireworkParticles}}"
+        wx:key="id"
+      ></view>
+    </view>
+  </view>
+
+  <!-- 操作提示（移除，下方统计区替代） -->
+
+  <!-- ===== 统计区域 ===== -->
+  <view class="stats-section">
+
+    <!-- 实时动态 -->
+    <text class="stats-group-title">实时动态</text>
+    <view class="stats-row">
+      <view class="stat-card">
+        <text class="stat-label">步数</text>
+        <text class="stat-value">{{moves}}</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-label">最大方块</text>
+        <text class="stat-value stat-value-orange">{{maxTile}}</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-label">合并次数</text>
+        <text class="stat-value">{{mergeCount}}</text>
+      </view>
+      <view class="stat-card">
+        <text class="stat-label">游戏用时</text>
+        <text class="stat-value stat-value-mono">{{gameTime}}</text>
+      </view>
+    </view>
+
+    <!-- 效率指标 -->
+    <text class="stats-group-title">效率指标</text>
+    <view class="stats-row">
+      <view class="stat-card stat-card-half">
+        <text class="stat-label">场均得分</text>
+        <text class="stat-value stat-value-gold">{{avgScore}}</text>
+      </view>
+      <view class="stat-card stat-card-half">
+        <text class="stat-label">最大单次合并</text>
+        <text class="stat-value stat-value-gold">+{{maxMergeScore}}</text>
+      </view>
+    </view>
+
+    <!-- 历史记录 -->
+    <text class="stats-group-title">历史记录</text>
+    <view class="stats-row">
+      <view class="stat-card stat-card-third">
+        <text class="stat-label">总局数</text>
+        <text class="stat-value stat-value-sm">{{totalGames}}</text>
+      </view>
+      <view class="stat-card stat-card-third">
+        <text class="stat-label">通关次数</text>
+        <text class="stat-value stat-value-sm">{{totalWins}}</text>
+      </view>
+      <view class="stat-card stat-card-third">
+        <text class="stat-label">历史最高</text>
+        <text class="stat-value stat-value-sm">{{bestScore}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 作者信息 -->
+  <view class="author-info">
+    <text class="author-text">制作：焦糖铁观音@2026</text>
+  </view>
+</view>
